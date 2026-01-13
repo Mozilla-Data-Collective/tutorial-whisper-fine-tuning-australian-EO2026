@@ -172,7 +172,7 @@ def setup_gradio_demo():
             outputs=transcribe_output,
         )
 
-    demo.launch()
+    demo.launch(share=True)
 
 
 if __name__ == "__main__":
