@@ -1,3 +1,5 @@
+# Everything Open 2026 Canberra Tutorial: Fine-tuning the Whisper ASR model on Australian English data from the Mozilla Data Collective 
+
 <p align="center">
   <picture>
     <!-- When the user prefers dark mode, show the white logo -->
@@ -9,117 +11,14 @@
   </picture>
 </p>
 
+## Acknowledgements
 
-<div align="center">
+This tutorial is based on [the Speech-to-Text Finetuning Blueprint](https://mozilla-ai.github.io/speech-to-text-finetune/) developed by [Kostis Saitas Zarkias](https://github.com/Kostis-S-Z) as part of his work at Mozilla.AI. Thank you so much, Kostis! 
 
-![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
-[![Hugging Face](https://img.shields.io/badge/Hugging%20Face-%F0%9F%A4%97-yellow)](https://huggingface.co/)
-[![Gradio](https://img.shields.io/badge/Gradio-%F0%9F%8E%A8-green)](https://www.gradio.app/)
-[![Common Voice](https://img.shields.io/badge/Common%20Voice-%F0%9F%8E%A4-orange)](https://commonvoice.mozilla.org)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
-[![](https://dcbadge.limes.pink/api/server/YuMNeuKStr?style=flat)](https://discord.gg/YuMNeuKStr) <br>
-[![Docs](https://github.com/mozilla-ai/speech-to-text-finetune/actions/workflows/docs.yaml/badge.svg)](https://github.com/mozilla-ai/speech-to-text-finetune/actions/workflows/docs.yaml/)
-[![Tests](https://github.com/mozilla-ai/speech-to-text-finetune/actions/workflows/tests.yaml/badge.svg)](https://github.com/mozilla-ai/speech-to-text-finetune/actions/workflows/tests.yaml/)
-[![Ruff](https://github.com/mozilla-ai/speech-to-text-finetune/actions/workflows/lint.yaml/badge.svg?label=Ruff)](https://github.com/mozilla-ai/speech-to-text-finetune/actions/workflows/lint.yaml/)
+## Prerequisites
 
-[Blueprints Hub](https://developer-hub.mozilla.ai/)
-| [Documentation](https://mozilla-ai.github.io/speech-to-text-finetune/)
-| [Getting Started](https://mozilla-ai.github.io/speech-to-text-finetune/getting-started)
-| [Contributing](CONTRIBUTING.md)
+Before starting this Tutorial, you should: 
 
-</div>
+1. Create an account on the [Mozilla Data Collective]() platform, and have downloaded the Common Voice Australian English dataset @TODO link to the dataset here when I am sure that it works properly with the tutorial.
 
-# Finetuning Speech-to-Text models: a Blueprint by Mozilla.ai for building your own STT/ASR dataset & model
-
-This blueprint enables you to create your own [Speech-to-Text](https://en.wikipedia.org/wiki/Speech_recognition) dataset and model, optimizing performance for your specific language and use case. Everything runs locally—even on your laptop, ensuring your data stays private. You can finetune a model using your own data or leverage the Common Voice dataset, which supports a wide range of languages. To see the full list of supported languages, visit the [CommonVoice website](https://commonvoice.mozilla.org/en/languages).
-
-<img src="./images/speech-to-text-finetune-diagram.png" width="1200" alt="speech-to-text-finetune Diagram" />
-
-
-## Example result on Galician
-
-Input Speech audio:
-
-
-https://github.com/user-attachments/assets/960f1b4f-04b9-4b8d-b988-d51504401e9a
-
-Text output:
-
-| Ground Truth | [openai/whisper-small](https://huggingface.co/openai/whisper-small) | [mozilla-ai/whisper-small-gl](https://huggingface.co/mozilla-ai/whisper-small-gl) *|
-| -------------| -------------| ------------------- |
-| O Comité Económico e Social Europeo deu luz verde esta terza feira ao uso de galego, euskera e catalán nas súas sesións plenarias, segundo informou o Ministerio de Asuntos Exteriores nun comunicado no que se felicitou da decisión. | O Comité Económico Social Europeo de Uluz Verde está terza feira a Ousse de Gallego e Uskera e Catalan a súas asesións planarias, segundo informou o Ministerio de Asuntos Exteriores nun comunicado no que se felicitou da decisión. | O Comité Económico Social Europeo deu luz verde esta terza feira ao uso de galego e usquera e catalán nas súas sesións planarias, segundo informou o Ministerio de Asuntos Exteriores nun comunicado no que se felicitou da decisión. |
-
-\* Finetuned on the Galician set Common Voice 17.0
-
-👀 You can find a list of finetuned models, created by this Blueprint, on our HuggingFace [collection](https://huggingface.co/collections/mozilla-ai/common-voice-whisper-67b847a74ad7561781aa10fd).
-
-## Quick-start
-
-<div style="text-align: center;">
-
-| Finetune a STT model on Google Colab | Transcribe using a HuggingFace model | Explore all the functionality on GitHub Codespaces|
-|----------------------------------------|---------------------------------------------|---------------------------------------------------|
-| [![Try Finetuning on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mozilla-ai/speech-to-text-finetune/blob/main/demo/notebook.ipynb) | [![Try on Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Try%20on-Spaces-blue)](https://huggingface.co/spaces/mozilla-ai/transcribe) | [![Try on Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=mozilla-ai/speech-to-text-finetune&skip_quickstart=true&machine=standardLinux32gb) |
-
-</div>
-
-## Try it locally
-
-The same instructions apply for the GitHub Codespaces option.
-
-### Setup
-
-1. Use a virtual environment and install dependencies: `pip install -e .` & [ffmpeg](https://ffmpeg.org) e.g. for Ubuntu: `sudo apt install ffmpeg`, for Mac: `brew install ffmpeg`
-
-### Evaluate existing STT models from the HuggingFace repository.
-
-1. Simply execute: `python demo/transcribe_app.py`
-2. Add the HF model id of your choice
-3. Record a sample of your voice and get the transcribe text back
-
-### Making your own STT model using Custom Data
-
-1. Create your own, local, custom dataset by running this command and following the instructions: `python src/speech_to_text_finetune/make_custom_dataset_app.py`
-2. Configure `config.yaml` with the model, custom data directory and hyperparameters of your choice. Note that if you select `push_to_hub: True` you need to have an HF account and log in locally.
-3. Finetune a model by running: `python src/speech_to_text_finetune/finetune_whisper.py`
-4. Test the finetuned model in the transcription app: `python demo/transcribe_app.py`
-
-### Making your own STT model using Common Voice
-
-There are two ways to download the Common Voice dataset:
-
-#### From Common Voice's website (Recommended)
-
-1. Go to https://commonvoice.mozilla.org/en/datasets, pick your language and dataset version and download the dataset
-2. Move the zipped file under a directory of your choice and extract it
-
-#### From HuggingFace
-
-**_Note_**: A Hugging Face account is required.
-
-**_Note 2_**: The Common Voice dataset is not properly maintained on HuggingFace and the latest release there is a much older version.
-
-1. Go to the Common Voice dataset [repo](https://huggingface.co/datasets/mozilla-foundation/common_voice_17_0) and ask for explicit access request (should be approved instantly).
-2. On Hugging Face create an [Access Token](https://huggingface.co/docs/hub/en/security-tokens) and in your terminal, run the command `huggingface-cli login` and follow the instructions to log in to your account.
-
-#### _After you have completed the steps above_
-
-3. Configure `config.yaml` with the model, the extracted Common Voice dir **_OR_** the dataset repo id of HF and hyperparameters of your choice.
-4. Finetune a model by running: `python src/speech_to_text_finetune/finetune_whisper.py`
-5. Test the finetuned model in the transcription app: `python demo/transcribe_app.py`
-
-
-> [!TIP]
-> Run `python demo/model_comparison_app.py` to easily compare the performance of two models side by side ([example](images/model_comparison_example.png)).
-
-## Troubleshooting
-
-If you are having issues / bugs, check our [Troubleshooting](https://mozilla-ai.github.io/speech-to-text-finetune/getting-started/#troubleshooting) section, before opening a new issue.
-
-## License
-
-This project is licensed under the Apache 2.0 License. See the [LICENSE](LICENSE) file for details.
-
-## Contributing
-
-Contributions are welcome! To get started, you can check out the [CONTRIBUTING.md](CONTRIBUTING.md) file.
+2. @TODO Google Colab link to launch in Google Colab (then the Notebook should run the rest of the tutorial)
