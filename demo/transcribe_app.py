@@ -148,7 +148,7 @@ def setup_gradio_demo():
             timestamps_check = gr.Checkbox(label="Show timestamps")
 
         transcribe_button = gr.Button("Transcribe")
-        transcribe_output = gr.Text(label="Output")
+        transcribe_output = gr.Text(label="Output", lines=20)
 
         transcribe_button.click(
             fn=transcribe,
