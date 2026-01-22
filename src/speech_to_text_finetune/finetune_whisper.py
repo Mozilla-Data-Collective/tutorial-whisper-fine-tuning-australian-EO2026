@@ -43,14 +43,14 @@ def run_finetuning(
     """
     cfg = load_config(config_path)
 
-    #language_id = TO_LANGUAGE_CODE.get(cfg.language.lower())
-    #if not language_id:
-        #raise ValueError(
-            #f"\nThis language is not inherently supported by this Whisper model. However you can still “teach” Whisper "
-            #f"the language of your choice!\nVisit https://glottolog.org/, find which language is most closely "
-            #f"related to {cfg.language} from the list of supported languages below, and update your config file with "
-            #f"that language.\n{json.dumps(TO_LANGUAGE_CODE, indent=4, sort_keys=True)}."
-        #)
+    language_id = TO_LANGUAGE_CODE.get(cfg.language.lower())
+    if not language_id:
+        raise ValueError(
+            f"\nThis language is not inherently supported by this Whisper model. However you can still “teach” Whisper "
+            f"the language of your choice!\nVisit https://glottolog.org/, find which language is most closely "
+            f"related to {cfg.language} from the list of supported languages below, and update your config file with "
+            f"that language.\n{json.dumps(TO_LANGUAGE_CODE, indent=4, sort_keys=True)}."
+        )
 
     if cfg.repo_name == "default":
         cfg.repo_name = f"{cfg.model_id.split('/')[1]}-{language_id}"

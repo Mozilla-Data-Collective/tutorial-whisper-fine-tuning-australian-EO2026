@@ -271,7 +271,7 @@ def load_and_proc_hf_fleurs(
 
 def load_my_dataset(
     csv_path: str = "/content/commonvoice-v24_en-AU/commonvoice-v24_en-AU.csv",
-    audio_dir: str = "/content/audio_files",
+    audio_dir: str = "/content/commonvoice-v24_en-AU/audio_files",
     train_split: float = 0.8
 ) -> DatasetDict:
     """
