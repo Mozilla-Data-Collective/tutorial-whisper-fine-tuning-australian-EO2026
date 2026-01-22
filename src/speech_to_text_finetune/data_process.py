@@ -88,17 +88,17 @@ def load_dataset_from_dataset_id(
     Raises:
         ValueError: If the dataset cannot be found locally or on HuggingFace
     """
-    ##try:
-        ##dataset = load_my_dataset()
-        ##return dataset, _get_local_proc_dataset_path(dataset_id)
-   ## except FileNotFoundError:
-       ## pass
+    try:
+        dataset = load_my_dataset()
+        return dataset, _get_local_proc_dataset_path(dataset_id)
+    except FileNotFoundError:
+        pass
 
-   ## try:
-        ##dataset = _load_local_common_voice(dataset_id)
-        ##return dataset, _get_local_proc_dataset_path(dataset_id)
-    ##except FileNotFoundError:
-        ##pass
+    try:
+        dataset = _load_local_common_voice(dataset_id)
+        return dataset, _get_local_proc_dataset_path(dataset_id)
+    except FileNotFoundError:
+        pass
 
     try:
         dataset = _load_custom_dataset(dataset_id)
@@ -106,13 +106,13 @@ def load_dataset_from_dataset_id(
     except FileNotFoundError:
         pass
 
-    ##try:
-        ##dataset = _load_hf_common_voice(dataset_id, language_id)
-        ##return dataset, _get_hf_proc_dataset_path(dataset_id, language_id)
-   ## except HFValidationError:
-        ##pass
-    ##except FileNotFoundError:
-        ##pass
+    try:
+        dataset = _load_hf_common_voice(dataset_id, language_id)
+        return dataset, _get_hf_proc_dataset_path(dataset_id, language_id)
+    except HFValidationError:
+        pass
+    except FileNotFoundError:
+        pass
 
     raise ValueError(
         f"Could not find dataset {dataset_id}, neither locally nor at HuggingFace. "
